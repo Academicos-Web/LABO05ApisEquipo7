@@ -126,34 +126,49 @@ const createNewPost = async (): Promise<void> => {
  * * Instrucciones para el estudiante:
  * Sigue los pasos numerados para completar la función.
  */
+interface Comment {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
 const fetchCommentsByPost = async (postId: number): Promise<void> => {
   
   // 1. [LOG]: Imprime en consola un mensaje avisando que vas a buscar 
   // los comentarios del 'postId' recibido. Usa estilos %c si quieres.
+  console.log(`%c [LAB 3] Buscando comentarios del post ${postId}...`, "color: purple; font-weight: bold;");
 
   try {
     // 2. [PETICIÓN]: Crea una constante 'response'.
     // Usa 'fetch' con backticks para unir API_URL + /posts/ + postId + /comments.
-    
+    const response = await fetch(`${API_URL}/posts/${postId}/comments`);
 
     // 3. [VALIDACIÓN]: Si la respuesta (response.ok) es falsa, 
     // lanza un error (throw new Error) indicando que falló la carga.
-
+    if (!response.ok) {
+      throw new Error("Error al cargar los comentarios");
+    }
 
     // 4. [TRADUCCIÓN]: Crea una constante 'data'.
     // Usa 'await response.json()' y asígnale el tipo 'Comment[]' (Array de comentarios).
-    
+    const data: Comment[] = await response.json();
 
     // 5. [PROCESAMIENTO]: Una vez tengas los datos, imprime cuántos comentarios llegaron.
     // Tip: Usa data.length.
+    console.log(`✅ Total de comentarios: ${data.length}`);
 
 
     // 6. [RECORRIDO]: Usa un método de array (como .forEach) para recorrer la lista.
     // Dentro, imprime solo el 'email' de cada comentario para verificar el tipado.
-
+    data.forEach((comment) => {
+      console.log(`📧 ${comment.email}`);
+    });
 
   } catch (error) {
     // 7. [ERRORES]: Captura el error y muéstralo con console.error.
+    console.error("❌ Fallo en Lab 3:", error);
   }
 };
 
@@ -250,7 +265,8 @@ const runLaboratory = async () => {
   // Usamos await para que los logs salgan en orden y no se mezclen.
   await fetchSinglePost(POST_ID_TO_SEARCH); 
   await createNewPost();    
-  //await getAutos();                
+  //await getAutos();  
+  await fetchCommentsByPost(POST_ID_TO_SEARCH);              
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
 };
