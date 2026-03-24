@@ -206,17 +206,21 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
  * PASO 3: INTERFAZ DE DATOS
  * Definimos la estructura exacta de la tabla que vemos en tu imagen.
  */
-interface Auto {
-  id_auto: number;       // Columna ID (Primary Key)
-  patente: string;       // Columna Patente (Varchar)
-  id_propietario: number; // Columna ID Propietario (Foreign Key)
+interface Usuario {
+  id_usuario: number;
+  nombre: string;
+  correo_institucional: string;
+  contrasena_hash: string;
+  rol: 'alumno' | 'docente' | 'administrador';
+  fecha_registro: string;
+  estado_cuenta: 'activo' | 'inactivo' | 'suspendido';
 }
 
 /**
  * PASO 4: LA FUNCIÓN DE LECTURA (GET)
  * Esta función entra a la base de datos y trae los registros.
  */
-const getAutos = async (): Promise<void> => {
+const getUsuarios = async (): Promise<void> => {
   
   // Realizamos la consulta: 
   // 1. .from('autos') -> Selecciona la tabla de tu imagen.
@@ -224,23 +228,23 @@ const getAutos = async (): Promise<void> => {
 
   // DESCOMENTAR ESTAS LINEAS QUE SIGUEN
 
-  const { data, error } = await supabase
-    .from('autos')   
+   const { data, error } = await supabase
+    .from('usuario')  
     .select('*');
 
   // Si Supabase responde con un error (ej: tabla inexistente o sin permisos RLS)
-  if (error) {
-    console.error("❌ Error al obtener los autos:", error.message);
+   if (error) {
+    console.error("❌ Error al obtener los usuarios:", error.message);
     return;
   }
 
   // Si todo sale bien, 'data' contiene el array de objetos.
   // Usamos 'as Auto[]' para decirle a TS que confíe en nuestra interfaz.
-  const listaAutos: Auto[] = data as Auto[];
+  const listaUsuarios: Usuario[] = data as Usuario[];
 
   // Mostramos el resultado final en la consola del navegador
-  console.log("✅ Lista de autos recibida:");
-  console.table(listaAutos); 
+  console.log(" Lista de usuarios:");
+  console.table(listaUsuarios);
 
   //HASTA AQUI DEBES DESCOMENTAR
   
