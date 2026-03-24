@@ -205,6 +205,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 /**
  * PASO 3: INTERFAZ DE DATOS
  * Definimos la estructura exacta de la tabla que vemos en tu imagen.
+ * // REFERENCIA
+const getAutos = async (): Promise<void> => {
+  const { data, error } = await supabase
+    .from('autos')
+    .select('*');
+};
  */
 interface Usuario {
   id_usuario: number;
@@ -237,7 +243,25 @@ const getUsuarios = async (): Promise<void> => {
     console.error("❌ Error al obtener los usuarios:", error.message);
     return;
   }
+/*const deleteUsuario = async (id: number): Promise<void> => {
+  if (!id) {
+    console.error("ID inválido");
+    return;
+  }
 
+  const { error } = await supabase
+    .from('usuario')
+    .delete()
+    .eq('id_usuario', id);
+
+  if (error) {
+    console.error(error.message);
+    return;
+  }
+
+  console.log(`✅ Usuario con ID ${id} eliminado`);
+};
+/*
   // Si todo sale bien, 'data' contiene el array de objetos.
   // Usamos 'as Auto[]' para decirle a TS que confíe en nuestra interfaz.
   const listaUsuarios: Usuario[] = data as Usuario[];
