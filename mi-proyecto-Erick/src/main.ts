@@ -313,10 +313,13 @@ const getDocentesFullData = async (): Promise<void> => {
 const runLaboratory = async () => {
   console.log("%c --- INICIO DEL EXPERIMENTO ---", "background: #222; color: #bada55; padding: 5px;");
   
-  // 🔹 REFERENCIA
-  await getAutos();  
+  // 🔹 LABS ORIGINALES
+  await fetchSinglePost(POST_ID_TO_SEARCH); 
+  await createNewPost(); 
+  await getAutos();   
+  await fetchCommentsByPost(POST_ID_TO_SEARCH);
 
-  // 🔥 ENTREGABLE
+  // 🔥 SUPABASE (RETO FINAL)
   await getDocentesFullData();              
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
