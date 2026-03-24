@@ -1,4 +1,4 @@
-
+import { createClient } from '@supabase/supabase-js';
 /**
  * PASO 1: DATOS PRIMITIVOS (Configuración base)
  * Definimos valores básicos con tipado explícito para que el compilador sepa 
@@ -191,7 +191,7 @@ await fetchCommentsByPost(1);
  * PASO 1: CONFIGURACIÓN DE CONEXIÓN
  * Sustituye estos valores con los de tu proyecto en Supabase (Project Settings > API)
  */
-const SUPABASE_URL: string = "Api URL: https://btxachhlndyiecbetuvx.supabase.co";
+const SUPABASE_URL: string = "https://btxachhlndyiecbetuvx.supabase.co";
 const SUPABASE_KEY: string = "sb_publishable_nbxL983kM26QpZBCNk2Aag_Ge8oAVFR";
 
 /**
@@ -225,7 +225,7 @@ const getUsuarios = async (): Promise<void> => {
   // Realizamos la consulta: 
   // 1. .from('autos') -> Selecciona la tabla de tu imagen.
   // 2. .select('*')   -> Pide todas las columnas de esa tabla.
-
+ 
   // DESCOMENTAR ESTAS LINEAS QUE SIGUEN
 
    const { data, error } = await supabase
@@ -269,11 +269,9 @@ const runLaboratory = async () => {
   //await getAutos();                
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
+  await getUsuarios();
+
 };
-
-
-
-
 
 // Disparamos todo el proceso.
 runLaboratory();
