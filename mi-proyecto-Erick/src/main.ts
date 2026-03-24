@@ -201,25 +201,59 @@ const SUPABASE_KEY: string = "sb_publishable_nbxL983kM26QpZBCNk2Aag_Ge8oAVFR";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /**
- * 🔥 INTERFAZ PERSONALIZADA (BASADA EN MI BD)
+ * ##################################################
+ * 🔹 REFERENCIA ORIGINAL (AUTOS) - NO MODIFICAR
+ * ##################################################
  */
+
+interface Auto {
+  id_auto: number;
+  patente: string;
+  id_propietario: number;
+}
+
+const getAutos = async (): Promise<void> => {
+
+  console.log("%c [SUPABASE] Obteniendo autos...", "color: cyan; font-weight: bold;");
+
+  const { data, error } = await supabase
+    .from('autos')
+    .select('*');
+
+  if (error) {
+    console.error("❌ Error al obtener autos:", error.message);
+    return;
+  }
+
+  const autos: Auto[] = data as Auto[];
+
+  console.log("✅ Autos:");
+  console.table(autos);
+};
+
+/**
+ * ##################################################
+ * 🔥 TU IMPLEMENTACIÓN (DOCENTES - PRO)
+ * ##################################################
+ */
+
 interface DocenteCompleto {
   id_docente: number;
   grado_academico: string;
   usuario: {
     nombre: string;
     correo_institucional: string;
-  }[]; // 👈 ARRAY
+  }[];
 
   carrera: {
     nombre_carrera: string;
-  }[]; // 👈 ARRAY
+  }[];
 
   docente_materia: {
     periodo_academico: string;
     materia: {
       nombre_materia: string;
-    }[]; // 👈 ARRAY
+    }[];
   }[];
 }
 
@@ -260,32 +294,33 @@ const getDocentesFullData = async (): Promise<void> => {
   console.log("✅ Docentes con toda su información:");
 
   docentes.forEach((docente) => {
-  console.log(`\n👨‍🏫 ${docente.usuario[0]?.nombre}`);
-  console.log(`📧 ${docente.usuario[0]?.correo_institucional}`);
-  console.log(`🎓 ${docente.grado_academico}`);
-  console.log(`🏫 ${docente.carrera[0]?.nombre_carrera}`);
+    console.log(`\n👨‍🏫 ${docente.usuario[0]?.nombre}`);
+    console.log(`📧 ${docente.usuario[0]?.correo_institucional}`);
+    console.log(`🎓 ${docente.grado_academico}`);
+    console.log(`🏫 ${docente.carrera[0]?.nombre_carrera}`);
 
-  docente.docente_materia.forEach((dm) => {
-    console.log(`📚 ${dm.materia[0]?.nombre_materia} (${dm.periodo_academico})`);
+    docente.docente_materia.forEach((dm) => {
+      console.log(`📚 ${dm.materia[0]?.nombre_materia} (${dm.periodo_academico})`);
+    });
   });
-});
+};
 
 /**
- * PASO FINAL: EJECUCIÓN DEL LABORATORIO
+ * ##################################################
+ * 🚀 EJECUCIÓN
+ * ##################################################
  */
 const runLaboratory = async () => {
   console.log("%c --- INICIO DEL EXPERIMENTO ---", "background: #222; color: #bada55; padding: 5px;");
   
-  // 🔹 LABS ORIGINALES
-  await fetchSinglePost(POST_ID_TO_SEARCH); 
-  await createNewPost();    
-  await fetchCommentsByPost(POST_ID_TO_SEARCH);
+  // 🔹 REFERENCIA
+  await getAutos();  
 
-  // 🔥 SUPABASE (TU ENTREGABLE)
+  // 🔥 ENTREGABLE
   await getDocentesFullData();              
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
 };
 
 // Ejecutar todo
-runLaboratory();}
+runLaboratory();
