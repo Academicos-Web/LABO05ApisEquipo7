@@ -112,7 +112,13 @@ const createNewPost = async (): Promise<void> => {
  */
 // PISTA A: Crea la interfaz 'Comment'. 
 // Recuerda que la API devuelve: postId, id, name, email y body.
-
+interface Comment {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
 /**
  * PASO 7: FUNCIÓN DE BÚSQUEDA DE COMENTARIOS
  * Instrucciones:
@@ -120,41 +126,48 @@ const createNewPost = async (): Promise<void> => {
  * 2. Recuerda que la respuesta es una LISTA (Array) de objetos Comment.
  * 3. Usa un bucle o método de array (como .forEach) para mostrar los datos.
  */
+const fetchCommentsByPost = async (postId: number): Promise<void> => {
 /**
  * RETO DE LABORATORIO: Obtener recursos anidados (Comments)
  * * Instrucciones para el estudiante:
  * Sigue los pasos numerados para completar la función.
  */
-const fetchCommentsByPost = async (postId: number): Promise<void> => {
   
   // 1. [LOG]: Imprime en consola un mensaje avisando que vas a buscar 
   // los comentarios del 'postId' recibido. Usa estilos %c si quieres.
-
+ console.log(`%c[LAB 3] Buscando comentarios del post ${postId}...`, "color: purple; font-weight: bold;");
   try {
     // 2. [PETICIÓN]: Crea una constante 'response'.
     // Usa 'fetch' con backticks para unir API_URL + /posts/ + postId + /comments.
-    
+     const response = await fetch(`${API_URL}/posts/${postId}/comments`);
 
     // 3. [VALIDACIÓN]: Si la respuesta (response.ok) es falsa, 
     // lanza un error (throw new Error) indicando que falló la carga.
-
+    if (!response.ok) {
+      throw new Error("Error al cargar los comentarios");
+    }
 
     // 4. [TRADUCCIÓN]: Crea una constante 'data'.
     // Usa 'await response.json()' y asígnale el tipo 'Comment[]' (Array de comentarios).
-    
+    const data: Comment[] = await response.json();
 
     // 5. [PROCESAMIENTO]: Una vez tengas los datos, imprime cuántos comentarios llegaron.
     // Tip: Usa data.length.
-
+    console.log(`Total de comentarios: ${data.length}`);
 
     // 6. [RECORRIDO]: Usa un método de array (como .forEach) para recorrer la lista.
     // Dentro, imprime solo el 'email' de cada comentario para verificar el tipado.
+    data.forEach((comment) => {
+      console.log(`📧 ${comment.email}`);
+    });
 
 
   } catch (error) {
     // 7. [ERRORES]: Captura el error y muéstralo con console.error.
+      console.error( "Fallo en Lab 3:", error);
   }
 };
+
 
 
 /**
@@ -162,7 +175,7 @@ const fetchCommentsByPost = async (postId: number): Promise<void> => {
  * Dentro de tu función 'runLaboratory', no olvides añadir:
  * await fetchCommentsByPost(POST_ID_TO_SEARCH);
  */
-
+await fetchCommentsByPost(1);
 /*
     ################################################################################
     
@@ -178,8 +191,8 @@ const fetchCommentsByPost = async (postId: number): Promise<void> => {
  * PASO 1: CONFIGURACIÓN DE CONEXIÓN
  * Sustituye estos valores con los de tu proyecto en Supabase (Project Settings > API)
  */
-const SUPABASE_URL: string = "TU_URL_DE_SUPABASE";
-const SUPABASE_KEY: string = "TU_KEY";
+const SUPABASE_URL: string = "Api URL: https://btxachhlndyiecbetuvx.supabase.co";
+const SUPABASE_KEY: string = "sb_publishable_nbxL983kM26QpZBCNk2Aag_Ge8oAVFR";
 
 /**
  * PASO 2: INICIALIZACIÓN DEL CLIENTE
@@ -187,7 +200,7 @@ const SUPABASE_KEY: string = "TU_KEY";
  */
 
 // DESCOMENTAR LA LINEA DE ABAJO
-// const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /**
  * PASO 3: INTERFAZ DE DATOS
@@ -211,7 +224,7 @@ const getAutos = async (): Promise<void> => {
 
   // DESCOMENTAR ESTAS LINEAS QUE SIGUEN
 
-  /*const { data, error } = await supabase
+  const { data, error } = await supabase
     .from('autos')   
     .select('*');
 
@@ -229,8 +242,8 @@ const getAutos = async (): Promise<void> => {
   console.log("✅ Lista de autos recibida:");
   console.table(listaAutos); 
 
-  HASTA AQUI DEBES DESCOMENTAR
-  */ 
+  //HASTA AQUI DEBES DESCOMENTAR
+  
 };
 
 
