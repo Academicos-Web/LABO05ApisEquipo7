@@ -1,3 +1,4 @@
+import { createClient } from '@supabase/supabase-js';
 /**
  * PASO 1: DATOS PRIMITIVOS (Configuración base)
  * Definimos valores básicos con tipado explícito para que el compilador sepa 
@@ -197,8 +198,8 @@ const fetchCommentsByPost = async (postId: number): Promise<void> => {
  * PASO 1: CONFIGURACIÓN DE CONEXIÓN
  * Sustituye estos valores con los de tu proyecto en Supabase (Project Settings > API)
  */
-const SUPABASE_URL: string = "TU_URL_DE_SUPABASE";
-const SUPABASE_KEY: string = "TU_KEY";
+const SUPABASE_URL: string = "https://btxachhlndyiecbetuvx.supabase.co";
+const SUPABASE_KEY: string = "sb_publishable_nbxL983kM26QpZBCNk2Aag_Ge8oAVFR";
 
 /**
  * PASO 2: INICIALIZACIÓN DEL CLIENTE
@@ -206,23 +207,23 @@ const SUPABASE_KEY: string = "TU_KEY";
  */
 
 // DESCOMENTAR LA LINEA DE ABAJO
-// const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /**
  * PASO 3: INTERFAZ DE DATOS
  * Definimos la estructura exacta de la tabla que vemos en tu imagen.
  */
-interface Auto {
-  id_auto: number;       // Columna ID (Primary Key)
-  patente: string;       // Columna Patente (Varchar)
-  id_propietario: number; // Columna ID Propietario (Foreign Key)
+interface carrera {
+  id_carrera: number;       // Columna ID (Primary Key)
+  nombre_carrera: string;       // Columna nombre_carrera(Varchar)
+  facultad: string; // Columna facultad (Varchar)
 }
 
 /**
  * PASO 4: LA FUNCIÓN DE LECTURA (GET)
  * Esta función entra a la base de datos y trae los registros.
  */
-const getAutos = async (): Promise<void> => {
+const getCarreras = async (): Promise<void> => {
   
   // Realizamos la consulta: 
   // 1. .from('autos') -> Selecciona la tabla de tu imagen.
@@ -230,8 +231,8 @@ const getAutos = async (): Promise<void> => {
 
   // DESCOMENTAR ESTAS LINEAS QUE SIGUEN
 
-  /*const { data, error } = await supabase
-    .from('autos')   
+  const { data, error } = await supabase
+    .from('carrera')   
     .select('*');
 
   // Si Supabase responde con un error (ej: tabla inexistente o sin permisos RLS)
@@ -242,14 +243,14 @@ const getAutos = async (): Promise<void> => {
 
   // Si todo sale bien, 'data' contiene el array de objetos.
   // Usamos 'as Auto[]' para decirle a TS que confíe en nuestra interfaz.
-  const listaAutos: Auto[] = data as Auto[];
+  const listaCarrera: carrera[] = data as carrera[];
 
   // Mostramos el resultado final en la consola del navegador
-  console.log("✅ Lista de autos recibida:");
-  console.table(listaAutos); 
+  console.log("✅ Lista de carreras:");
+  console.table(listaCarrera); 
 
-  HASTA AQUI DEBES DESCOMENTAR
-  */ 
+ //HASTA AQUI DEBES DESCOMENTAR
+  
 };
 
 
@@ -269,7 +270,7 @@ const runLaboratory = async () => {
   await fetchSinglePost(POST_ID_TO_SEARCH); 
   await createNewPost();
   await fetchCommentsByPost(POST_ID_TO_SEARCH);    
-  //await getAutos();                
+  await getCarreras();                
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
 };
