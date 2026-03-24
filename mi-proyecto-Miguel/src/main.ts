@@ -247,11 +247,46 @@ const getCarreras = async (): Promise<void> => {
 
   // Mostramos el resultado final en la consola del navegador
   console.log("✅ Lista de carreras:");
-  console.table(listaCarrera); 
+  console.table(listaCarrera);
+};
+
+  /**
+ * PASO 5: FUNCIÓN DE ACTUALIZACIÓN (PUT)
+ * Actualiza una carrera existente por su ID
+ */
+const updateCarrera = async (id: number, nuevoNombre: string, nuevaFacultad: string): Promise<void> => {
+  console.log(`%c [SUPABASE] Actualizando carrera ID: ${id}...`, "color: orange; font-weight: bold;");
+
+  try {
+    const { data, error } = await supabase
+      .from('carrera')
+      .update({
+        nombre_carrera: nuevoNombre,
+        facultad: nuevaFacultad
+      })
+      .eq('id_carrera', id)
+      .select();
+
+    if (error) {
+      throw new Error(`Error al actualizar: ${error.message}`);
+    }
+
+    if (!data || data.length === 0) {
+      console.log(`⚠️ No se encontró carrera con ID ${id}`);
+      return;
+    }
+
+    console.log("✅ Carrera actualizada exitosamente:");
+    console.table(data);
+
+  } catch (error) {
+    console.error("❌ Fallo en actualización:", error);
+  }
+};
 
  //HASTA AQUI DEBES DESCOMENTAR
   
-};
+
 
 
 
@@ -270,7 +305,19 @@ const runLaboratory = async () => {
   await fetchSinglePost(POST_ID_TO_SEARCH); 
   await createNewPost();
   await fetchCommentsByPost(POST_ID_TO_SEARCH);    
-  await getCarreras();                
+  await getCarreras();               
+  
+  // SUPABASE - PUT (actualizar carrera ID 20)
+  console.log("\n ACTUALIZANDO CARRERA ID 20...");
+  await updateCarrera(20, "Licenciatura en Turismo y Gestión Hotelera", "Facultad de Estudios Superiores Acatlán");
+  
+  // SUPABASE - PUT (actualizar carrera ID 23)
+  console.log("\n ACTUALIZANDO CARRERA ID 23...");
+  await updateCarrera(23, "Archivonomía", "Facultad de Estudios Superiores Acatlán");
+
+  // SUPABASE - GET (ver carreras después de actualizar)
+  console.log("\n CARRERAS DESPUÉS DE ACTUALIZAR:");
+  await getCarreras();
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
 };
