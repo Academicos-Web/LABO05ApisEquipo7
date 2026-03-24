@@ -182,98 +182,110 @@ const fetchCommentsByPost = async (postId: number): Promise<void> => {
 /*
     ################################################################################
     
-    Supabase challenge
+    Supabase challenge (MODIFICADO PARA MI BASE DE DATOS)
 
     #################################################################################
+*/
 
-
-
- */
+import { createClient } from '@supabase/supabase-js';
 
 /**
  * PASO 1: CONFIGURACIÓN DE CONEXIÓN
- * Sustituye estos valores con los de tu proyecto en Supabase (Project Settings > API)
  */
-const SUPABASE_URL: string = "TU_URL_DE_SUPABASE";
-const SUPABASE_KEY: string = "TU_KEY";
+const SUPABASE_URL: string = "https://btxachhlndyiecbetuvx.supabase.co";
+const SUPABASE_KEY: string = "sb_publishable_nbxL983kM26QpZBCNk2Aag_Ge8oAVFR";
 
 /**
  * PASO 2: INICIALIZACIÓN DEL CLIENTE
- * Creamos el objeto que nos permite hablar con la base de datos.
  */
-
-// DESCOMENTAR LA LINEA DE ABAJO
-// const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /**
- * PASO 3: INTERFAZ DE DATOS
- * Definimos la estructura exacta de la tabla que vemos en tu imagen.
+ * 🔥 INTERFAZ PERSONALIZADA (BASADA EN MI BD)
  */
-interface Auto {
-  id_auto: number;       // Columna ID (Primary Key)
-  patente: string;       // Columna Patente (Varchar)
-  id_propietario: number; // Columna ID Propietario (Foreign Key)
+interface DocenteCompleto {
+  id_docente: number;
+  grado_academico: string;
+  usuario: {
+    nombre: string;
+    correo_institucional: string;
+  }[]; // 👈 ARRAY
+
+  carrera: {
+    nombre_carrera: string;
+  }[]; // 👈 ARRAY
+
+  docente_materia: {
+    periodo_academico: string;
+    materia: {
+      nombre_materia: string;
+    }[]; // 👈 ARRAY
+  }[];
 }
 
 /**
- * PASO 4: LA FUNCIÓN DE LECTURA (GET)
- * Esta función entra a la base de datos y trae los registros.
+ * 🔥 FUNCIÓN PERSONALIZADA (JOIN DE VARIAS TABLAS)
  */
-const getAutos = async (): Promise<void> => {
-  
-  // Realizamos la consulta: 
-  // 1. .from('autos') -> Selecciona la tabla de tu imagen.
-  // 2. .select('*')   -> Pide todas las columnas de esa tabla.
+const getDocentesFullData = async (): Promise<void> => {
 
-  // DESCOMENTAR ESTAS LINEAS QUE SIGUEN
+  console.log("%c [SUPABASE] Obteniendo docentes COMPLETOS...", "color: green; font-weight: bold;");
 
-  /*const { data, error } = await supabase
-    .from('autos')   
-    .select('*');
+  const { data, error } = await supabase
+    .from('docente')
+    .select(`
+      id_docente,
+      grado_academico,
+      usuario (
+        nombre,
+        correo_institucional
+      ),
+      carrera (
+        nombre_carrera
+      ),
+      docente_materia (
+        periodo_academico,
+        materia (
+          nombre_materia
+        )
+      )
+    `);
 
-  // Si Supabase responde con un error (ej: tabla inexistente o sin permisos RLS)
   if (error) {
-    console.error("❌ Error al obtener los autos:", error.message);
+    console.error("❌ Error en Supabase:", error.message);
     return;
   }
 
-  // Si todo sale bien, 'data' contiene el array de objetos.
-  // Usamos 'as Auto[]' para decirle a TS que confíe en nuestra interfaz.
-  const listaAutos: Auto[] = data as Auto[];
+  const docentes: DocenteCompleto[] = data;
 
-  // Mostramos el resultado final en la consola del navegador
-  console.log("✅ Lista de autos recibida:");
-  console.table(listaAutos); 
+  console.log("✅ Docentes con toda su información:");
 
-  HASTA AQUI DEBES DESCOMENTAR
-  */ 
-};
+  docentes.forEach((docente) => {
+  console.log(`\n👨‍🏫 ${docente.usuario[0]?.nombre}`);
+  console.log(`📧 ${docente.usuario[0]?.correo_institucional}`);
+  console.log(`🎓 ${docente.grado_academico}`);
+  console.log(`🏫 ${docente.carrera[0]?.nombre_carrera}`);
 
-
-
-
-
-
+  docente.docente_materia.forEach((dm) => {
+    console.log(`📚 ${dm.materia[0]?.nombre_materia} (${dm.periodo_academico})`);
+  });
+});
 
 /**
- * PASO final: EJECUCIÓN DEL LABORATORIO
- * Creamos una función orquestadora para manejar el flujo de las llamadas.
+ * PASO FINAL: EJECUCIÓN DEL LABORATORIO
  */
 const runLaboratory = async () => {
   console.log("%c --- INICIO DEL EXPERIMENTO ---", "background: #222; color: #bada55; padding: 5px;");
   
-  // Usamos await para que los logs salgan en orden y no se mezclen.
+  // 🔹 LABS ORIGINALES
   await fetchSinglePost(POST_ID_TO_SEARCH); 
   await createNewPost();    
-  //await getAutos();  
-  await fetchCommentsByPost(POST_ID_TO_SEARCH);              
+  await fetchCommentsByPost(POST_ID_TO_SEARCH);
+
+  // 🔥 SUPABASE (TU ENTREGABLE)
+  await getDocentesFullData();              
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
 };
 
-
-
-
-
-// Disparamos todo el proceso.
-runLaboratory();
+// Ejecutar todo
+runLaboratory();}
